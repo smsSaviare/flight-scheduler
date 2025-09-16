@@ -1,20 +1,16 @@
-name: Deploy Vite React app to GitHub Pages
+name: Deploy React App
 
 on:
   push:
     branches:
-      - main   # cada push a main dispara el deploy
+      - main   # Cada vez que subas cambios a main, se hace el deploy automático
 
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
 
-    defaults:
-      run:
-        working-directory: frontend   # 👈 todos los comandos se ejecutan dentro de /frontend
-
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v3
 
       - name: Setup Node.js
@@ -23,13 +19,17 @@ jobs:
           node-version: 18
 
       - name: Install dependencies
-        run: npm install
+        run: |
+          cd frontend
+          npm install
 
       - name: Build project
-        run: npm run build
+        run: |
+          cd frontend
+          npm run build
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: frontend/dist   # 👈 importante, el build sale en frontend/dist
+          publish_dir: ./frontend/dist
